@@ -9,6 +9,7 @@ import { guessMapping } from './lib/csv';
 import type { ParsedCsv } from './lib/csv';
 import { makeId } from './lib/id';
 import { optimizeRoster } from './lib/optimizer';
+import { buildRosterSlots, totalRosterSpots } from './lib/roster';
 import type { OptimizeResult, Player, RosterConfig } from './types';
 import './app.css';
 
@@ -50,7 +51,8 @@ export default function App() {
   const [mappingError, setMappingError] = useState<string | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const [requiredIds, setRequiredIds] = useState<Set<string>>(new Set());
-  const [config, setConfig] = useState<RosterConfig>({ slots: [], budget: 200 });
+  const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
+  const [config, setConfig] = useState<RosterConfig>({ positionCounts: {}, budget: 200 });
   const [result, setResult] = useState<OptimizeResult | null>(null);
   const [optimizing, setOptimizing] = useState(false);
 
@@ -79,6 +81,8 @@ export default function App() {
     setMappingError(null);
     setPlayers(built);
     setRequiredIds(new Set());
+    setExcludedIds(new Set());
+    setConfig((prev) => ({ ...prev, positionCounts: {} }));
     setResult(null);
     setStage('build');
   }
@@ -90,13 +94,36 @@ export default function App() {
       else next.add(id);
       return next;
     });
+    setExcludedIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+  }
+
+  function toggleExcluded(id: string) {
+    setExcludedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+    setRequiredIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   }
 
   async function handleOptimize() {
     setOptimizing(true);
     setResult(null);
     try {
-      const res = await optimizeRoster(players, config, requiredIds);
+      const slots = buildRosterSlots(config, availablePositions);
+      const eligiblePlayers = players.filter((p) => !excludedIds.has(p.id));
+      const res = await optimizeRoster(eligiblePlayers, slots, config.budget, requiredIds);
       setResult(res);
     } catch (e) {
       setResult({
@@ -111,7 +138,7 @@ export default function App() {
     }
   }
 
-  const hasEmptySlots = config.slots.some((s) => s.eligiblePositions.length === 0 || !s.label.trim());
+  const totalSpots = totalRosterSpots(config);
 
   return (
     <div className="app-shell">
@@ -145,20 +172,19 @@ export default function App() {
 
           <RosterConfigForm config={config} onChange={setConfig} availablePositions={availablePositions} />
 
-          <PlayerTable players={players} requiredIds={requiredIds} onToggleRequired={toggleRequired} />
+          <PlayerTable
+            players={players}
+            requiredIds={requiredIds}
+            excludedIds={excludedIds}
+            onToggleRequired={toggleRequired}
+            onToggleExcluded={toggleExcluded}
+          />
 
           <div className="panel optimize-panel">
-            <button
-              className="btn-primary btn-large"
-              onClick={handleOptimize}
-              disabled={optimizing || config.slots.length === 0 || hasEmptySlots}
-            >
+            <button className="btn-primary btn-large" onClick={handleOptimize} disabled={optimizing || totalSpots === 0}>
               {optimizing ? 'Optimizing…' : 'Generate optimal roster'}
             </button>
-            {config.slots.length === 0 && <p className="muted">Add at least one roster slot above to get started.</p>}
-            {config.slots.length > 0 && hasEmptySlots && (
-              <p className="muted">Every slot needs a name and at least one eligible position.</p>
-            )}
+            {totalSpots === 0 && <p className="muted">Set at least one position count above to get started.</p>}
           </div>
 
           {result && <ResultsView result={result} config={config} />}

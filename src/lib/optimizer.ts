@@ -1,6 +1,6 @@
 import GLPK from 'glpk.js';
 import type { LP } from 'glpk.js';
-import type { OptimizeResult, Player, RosterConfig, RosterSlot } from '../types';
+import type { OptimizeResult, Player, RosterSlot } from '../types';
 
 let glpkPromise: ReturnType<typeof GLPK> | null = null;
 function getGlpk() {
@@ -24,14 +24,15 @@ function expandSlots(slots: RosterSlot[]): RosterSlot[] {
 
 export async function optimizeRoster(
   players: Player[],
-  config: RosterConfig,
+  configuredSlots: RosterSlot[],
+  budget: number,
   requiredPlayerIds: Set<string>,
 ): Promise<OptimizeResult> {
   const glpk = await getGlpk();
-  const slots = expandSlots(config.slots);
+  const slots = expandSlots(configuredSlots);
 
   if (slots.length === 0) {
-    return { status: 'error', message: 'Add at least one roster slot.', assignments: [], totalCost: 0, totalPoints: 0 };
+    return { status: 'error', message: 'Set at least one position count above.', assignments: [], totalCost: 0, totalPoints: 0 };
   }
 
   // Variable name for player i assigned to slot s.
@@ -101,7 +102,7 @@ export async function optimizeRoster(
       name: varName(player.id, slot.id),
       coef: player.cost,
     })),
-    bnds: { type: glpk.GLP_UP, ub: config.budget, lb: 0 },
+    bnds: { type: glpk.GLP_UP, ub: budget, lb: 0 },
   });
 
   // Required players must be used (in some eligible slot).

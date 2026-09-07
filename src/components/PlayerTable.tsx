@@ -4,10 +4,12 @@ import type { Player } from '../types';
 interface Props {
   players: Player[];
   requiredIds: Set<string>;
+  excludedIds: Set<string>;
   onToggleRequired: (id: string) => void;
+  onToggleExcluded: (id: string) => void;
 }
 
-export function PlayerTable({ players, requiredIds, onToggleRequired }: Props) {
+export function PlayerTable({ players, requiredIds, excludedIds, onToggleRequired, onToggleExcluded }: Props) {
   const [search, setSearch] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
 
@@ -29,18 +31,20 @@ export function PlayerTable({ players, requiredIds, onToggleRequired }: Props) {
   const requiredCost = players
     .filter((p) => requiredIds.has(p.id))
     .reduce((sum, p) => sum + p.cost, 0);
+  const excludedCount = excludedIds.size;
 
   return (
     <div className="panel">
       <h2>Players ({players.length})</h2>
       <p className="muted">
-        Check "Require" on any player you want guaranteed a roster spot.
+        Check "Require" to guarantee a player a roster spot, or "Exclude" to keep them out entirely.
         {requiredCount > 0 && (
           <strong>
             {' '}
             {requiredCount} required, ${requiredCost.toLocaleString()} committed.
           </strong>
         )}
+        {excludedCount > 0 && <strong> {excludedCount} excluded.</strong>}
       </p>
 
       <div className="player-filters">
@@ -65,6 +69,7 @@ export function PlayerTable({ players, requiredIds, onToggleRequired }: Props) {
           <thead>
             <tr>
               <th>Require</th>
+              <th>Exclude</th>
               <th>Name</th>
               <th>Position</th>
               <th>Team</th>
@@ -73,25 +78,28 @@ export function PlayerTable({ players, requiredIds, onToggleRequired }: Props) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((p) => (
-              <tr key={p.id} className={requiredIds.has(p.id) ? 'row-required' : ''}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={requiredIds.has(p.id)}
-                    onChange={() => onToggleRequired(p.id)}
-                  />
-                </td>
-                <td>{p.name}</td>
-                <td>{p.position}</td>
-                <td>{p.team ?? ''}</td>
-                <td className="num">{p.cost}</td>
-                <td className="num">{p.points}</td>
-              </tr>
-            ))}
+            {filtered.map((p) => {
+              const isRequired = requiredIds.has(p.id);
+              const isExcluded = excludedIds.has(p.id);
+              return (
+                <tr key={p.id} className={isRequired ? 'row-required' : isExcluded ? 'row-excluded' : ''}>
+                  <td>
+                    <input type="checkbox" checked={isRequired} onChange={() => onToggleRequired(p.id)} />
+                  </td>
+                  <td>
+                    <input type="checkbox" checked={isExcluded} onChange={() => onToggleExcluded(p.id)} />
+                  </td>
+                  <td>{p.name}</td>
+                  <td>{p.position}</td>
+                  <td>{p.team ?? ''}</td>
+                  <td className="num">{p.cost}</td>
+                  <td className="num">{p.points}</td>
+                </tr>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={6} className="muted">
+                <td colSpan={7} className="muted">
                   No players match your filters.
                 </td>
               </tr>

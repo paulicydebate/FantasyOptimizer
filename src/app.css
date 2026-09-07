@@ -164,6 +164,11 @@
 .row-required {
   background: var(--accent-bg);
 }
+.row-excluded {
+  background: rgba(220, 38, 38, 0.08);
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
 
 /* Roster config */
 .budget-field {
@@ -181,72 +186,33 @@
   background: var(--surface);
   color: var(--text);
 }
-.slot-list {
-  display: flex;
-  flex-direction: column;
+.position-count-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 10px;
 }
-.slot-row {
+.position-count-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 12px;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
 }
-.slot-label-input {
-  width: 140px;
-  padding: 7px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-}
-.position-chips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  flex: 1;
-}
-.chip {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 12px;
-  cursor: pointer;
-}
-.chip-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-.slot-count {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-}
-.slot-count input {
+.position-count-row input {
   width: 56px;
   padding: 6px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
+  font-weight: 400;
 }
 .total-slots-note {
   margin-top: 14px;
-}
-.slot-add-buttons {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.slot-add-buttons .btn-secondary {
-  margin-top: 12px;
 }
 
 /* Player filters */

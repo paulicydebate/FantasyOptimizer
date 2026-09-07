@@ -23,7 +23,8 @@ export interface RosterSlot {
 }
 
 export interface RosterConfig {
-  slots: RosterSlot[];
+  /** Roster spots per position, keyed by real position value (e.g. "RB") or the synthetic "FLEX" key. */
+  positionCounts: Record<string, number>;
   budget: number;
 }
 
