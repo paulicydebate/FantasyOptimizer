@@ -7,9 +7,17 @@ interface Props {
   excludedIds: Set<string>;
   onToggleRequired: (id: string) => void;
   onToggleExcluded: (id: string) => void;
+  onResetSelections: () => void;
 }
 
-export function PlayerTable({ players, requiredIds, excludedIds, onToggleRequired, onToggleExcluded }: Props) {
+export function PlayerTable({
+  players,
+  requiredIds,
+  excludedIds,
+  onToggleRequired,
+  onToggleExcluded,
+  onResetSelections,
+}: Props) {
   const [search, setSearch] = useState('');
   const [positionFilter, setPositionFilter] = useState('');
 
@@ -35,7 +43,14 @@ export function PlayerTable({ players, requiredIds, excludedIds, onToggleRequire
 
   return (
     <div className="panel">
-      <h2>Players ({players.length})</h2>
+      <div className="player-table-header-row">
+        <h2>Players ({players.length})</h2>
+        {(requiredCount > 0 || excludedCount > 0) && (
+          <button type="button" className="btn-secondary" onClick={onResetSelections}>
+            Reset require/exclude
+          </button>
+        )}
+      </div>
       <p className="muted">
         Check "Require" to guarantee a player a roster spot, or "Exclude" to keep them out entirely.
         {requiredCount > 0 && (

@@ -3,14 +3,17 @@ import { FileUpload } from './components/FileUpload';
 import { ColumnMapper } from './components/ColumnMapper';
 import type { MappingState } from './components/ColumnMapper';
 import { RosterConfigForm } from './components/RosterConfigForm';
+import { CostControls } from './components/CostControls';
 import { PlayerTable } from './components/PlayerTable';
 import { ResultsView } from './components/ResultsView';
+import { SensitivityView } from './components/SensitivityView';
 import { guessMapping } from './lib/csv';
 import type { ParsedCsv } from './lib/csv';
 import { makeId } from './lib/id';
 import { optimizeRoster } from './lib/optimizer';
 import { buildRosterSlots, totalRosterSpots } from './lib/roster';
-import type { OptimizeResult, Player, RosterConfig } from './types';
+import { runPriceVarianceSimulation, SIMULATION_RUNS } from './lib/simulation';
+import type { OptimizeResult, Player, RosterConfig, SimulationSummary } from './types';
 import './app.css';
 
 type Stage = 'upload' | 'mapping' | 'build';
@@ -44,6 +47,14 @@ function buildPlayers(csv: ParsedCsv, mapping: MappingState): { players: Player[
   return { players, error: null };
 }
 
+const DEFAULT_CONFIG: RosterConfig = {
+  positionCounts: {},
+  budget: 200,
+  minCost: null,
+  maxCost: null,
+  costVariancePct: 0,
+};
+
 export default function App() {
   const [stage, setStage] = useState<Stage>('upload');
   const [csv, setCsv] = useState<ParsedCsv | null>(null);
@@ -52,9 +63,11 @@ export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [requiredIds, setRequiredIds] = useState<Set<string>>(new Set());
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
-  const [config, setConfig] = useState<RosterConfig>({ positionCounts: {}, budget: 200 });
+  const [config, setConfig] = useState<RosterConfig>(DEFAULT_CONFIG);
   const [result, setResult] = useState<OptimizeResult | null>(null);
   const [optimizing, setOptimizing] = useState(false);
+  const [simulation, setSimulation] = useState<SimulationSummary | null>(null);
+  const [simulationProgress, setSimulationProgress] = useState(0);
 
   const availablePositions = useMemo(
     () => [...new Set(players.map((p) => p.position))].sort(),
@@ -82,8 +95,9 @@ export default function App() {
     setPlayers(built);
     setRequiredIds(new Set());
     setExcludedIds(new Set());
-    setConfig((prev) => ({ ...prev, positionCounts: {} }));
+    setConfig((prev) => ({ ...prev, positionCounts: {}, minCost: null, maxCost: null }));
     setResult(null);
+    setSimulation(null);
     setStage('build');
   }
 
@@ -117,14 +131,44 @@ export default function App() {
     });
   }
 
+  function resetSelections() {
+    setRequiredIds(new Set());
+    setExcludedIds(new Set());
+  }
+
+  function eligiblePlayers(): Player[] {
+    return players.filter((p) => {
+      if (excludedIds.has(p.id)) return false;
+      if (requiredIds.has(p.id)) return true;
+      if (config.minCost != null && p.cost < config.minCost) return false;
+      if (config.maxCost != null && p.cost > config.maxCost) return false;
+      return true;
+    });
+  }
+
   async function handleOptimize() {
     setOptimizing(true);
     setResult(null);
+    setSimulation(null);
+    setSimulationProgress(0);
     try {
       const slots = buildRosterSlots(config, availablePositions);
-      const eligiblePlayers = players.filter((p) => !excludedIds.has(p.id));
-      const res = await optimizeRoster(eligiblePlayers, slots, config.budget, requiredIds);
+      const eligible = eligiblePlayers();
+      const res = await optimizeRoster(eligible, slots, config.budget, requiredIds);
       setResult(res);
+
+      if (res.status === 'optimal' && config.costVariancePct > 0) {
+        const summary = await runPriceVarianceSimulation(
+          eligible,
+          slots,
+          config.budget,
+          requiredIds,
+          config.costVariancePct,
+          SIMULATION_RUNS,
+          setSimulationProgress,
+        );
+        setSimulation(summary);
+      }
     } catch (e) {
       setResult({
         status: 'error',
@@ -172,22 +216,31 @@ export default function App() {
 
           <RosterConfigForm config={config} onChange={setConfig} availablePositions={availablePositions} />
 
+          <CostControls config={config} onChange={setConfig} />
+
           <PlayerTable
             players={players}
             requiredIds={requiredIds}
             excludedIds={excludedIds}
             onToggleRequired={toggleRequired}
             onToggleExcluded={toggleExcluded}
+            onResetSelections={resetSelections}
           />
 
           <div className="panel optimize-panel">
             <button className="btn-primary btn-large" onClick={handleOptimize} disabled={optimizing || totalSpots === 0}>
-              {optimizing ? 'Optimizing…' : 'Generate optimal roster'}
+              {optimizing
+                ? simulationProgress > 0
+                  ? `Running simulation… (${simulationProgress}/${SIMULATION_RUNS})`
+                  : 'Optimizing…'
+                : 'Generate optimal roster'}
             </button>
             {totalSpots === 0 && <p className="muted">Set at least one position count above to get started.</p>}
           </div>
 
           {result && <ResultsView result={result} config={config} />}
+
+          {simulation && <SensitivityView summary={simulation} variancePct={config.costVariancePct} />}
         </>
       )}
     </div>

@@ -215,6 +215,33 @@
   margin-top: 14px;
 }
 
+/* Cost controls */
+.cost-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.cost-control-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.cost-control-field input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 400;
+}
+.field-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 /* Player filters */
 .player-filters {
   display: flex;
@@ -231,6 +258,16 @@
 }
 .player-filters input {
   flex: 1;
+}
+.player-table-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.player-table-header-row .btn-secondary {
+  margin-top: 0;
 }
 
 /* Optimize + results */
@@ -253,4 +290,32 @@
 .stat-label {
   font-size: 13px;
   color: var(--text-muted);
+}
+
+/* Sensitivity / simulation */
+.sensitivity-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+.sensitivity-group h3 {
+  font-size: 14px;
+  margin: 0 0 6px;
+  color: var(--text-muted);
+}
+.rate-bar-track {
+  display: inline-block;
+  width: 50px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  margin-right: 8px;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.rate-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
 }
