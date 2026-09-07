@@ -1,4 +1,4 @@
-import { FLEX_KEY, flexPositions, totalRosterSpots } from '../lib/roster';
+import { FLEX_ELIGIBLE, FLEX_KEY, flexPositions, totalRosterSpots } from '../lib/roster';
 import type { RosterConfig } from '../types';
 
 interface Props {
@@ -7,11 +7,24 @@ interface Props {
   availablePositions: string[];
 }
 
+function parseOptionalNumber(value: string): number | null {
+  if (value.trim() === '') return null;
+  const n = Number(value);
+  return Number.isNaN(n) ? null : n;
+}
+
 export function RosterConfigForm({ config, onChange, availablePositions }: Props) {
   function setCount(key: string, count: number) {
     onChange({
       ...config,
       positionCounts: { ...config.positionCounts, [key]: Math.max(0, count) },
+    });
+  }
+
+  function setMax(position: string, max: number | null) {
+    onChange({
+      ...config,
+      maxPerPosition: { ...config.maxPerPosition, [position]: max },
     });
   }
 
@@ -40,17 +53,37 @@ export function RosterConfigForm({ config, onChange, availablePositions }: Props
         <p className="muted">Upload player data first to see positions.</p>
       ) : (
         <div className="position-count-grid">
-          {rows.map((row) => (
-            <label key={row.key} className="position-count-row">
-              <span>{row.label}</span>
-              <input
-                type="number"
-                min={0}
-                value={config.positionCounts[row.key] ?? 0}
-                onChange={(e) => setCount(row.key, Number(e.target.value))}
-              />
-            </label>
-          ))}
+          {rows.map((row) => {
+            const canCapMax = row.key !== FLEX_KEY && FLEX_ELIGIBLE.has(row.key.toUpperCase());
+            return (
+              <div key={row.key} className="position-count-row">
+                <span>{row.label}</span>
+                <div className="position-count-inputs">
+                  <label className="position-count-subfield">
+                    <span>Slots</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={config.positionCounts[row.key] ?? 0}
+                      onChange={(e) => setCount(row.key, Number(e.target.value))}
+                    />
+                  </label>
+                  {canCapMax && (
+                    <label className="position-count-subfield">
+                      <span>Max</span>
+                      <input
+                        type="number"
+                        min={0}
+                        placeholder="∞"
+                        value={config.maxPerPosition[row.key] ?? ''}
+                        onChange={(e) => setMax(row.key, parseOptionalNumber(e.target.value))}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 

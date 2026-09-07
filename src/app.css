@@ -188,7 +188,7 @@
 }
 .position-count-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 10px;
 }
 .position-count-row {
@@ -202,8 +202,21 @@
   font-size: 14px;
   font-weight: 500;
 }
-.position-count-row input {
-  width: 56px;
+.position-count-inputs {
+  display: flex;
+  gap: 10px;
+}
+.position-count-subfield {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.position-count-subfield input {
+  width: 48px;
   padding: 6px;
   border-radius: 6px;
   border: 1px solid var(--border);

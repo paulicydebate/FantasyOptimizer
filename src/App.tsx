@@ -53,6 +53,7 @@ const DEFAULT_CONFIG: RosterConfig = {
   minCost: null,
   maxCost: null,
   costVariancePct: 0,
+  maxPerPosition: {},
 };
 
 export default function App() {
@@ -95,7 +96,7 @@ export default function App() {
     setPlayers(built);
     setRequiredIds(new Set());
     setExcludedIds(new Set());
-    setConfig((prev) => ({ ...prev, positionCounts: {}, minCost: null, maxCost: null }));
+    setConfig((prev) => ({ ...prev, positionCounts: {}, minCost: null, maxCost: null, maxPerPosition: {} }));
     setResult(null);
     setSimulation(null);
     setStage('build');
@@ -154,7 +155,7 @@ export default function App() {
     try {
       const slots = buildRosterSlots(config, availablePositions);
       const eligible = eligiblePlayers();
-      const res = await optimizeRoster(eligible, slots, config.budget, requiredIds);
+      const res = await optimizeRoster(eligible, slots, config.budget, requiredIds, config.maxPerPosition);
       setResult(res);
 
       if (res.status === 'optimal' && config.costVariancePct > 0) {
@@ -164,6 +165,7 @@ export default function App() {
           config.budget,
           requiredIds,
           config.costVariancePct,
+          config.maxPerPosition,
           SIMULATION_RUNS,
           setSimulationProgress,
         );

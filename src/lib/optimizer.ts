@@ -27,6 +27,7 @@ export async function optimizeRoster(
   configuredSlots: RosterSlot[],
   budget: number,
   requiredPlayerIds: Set<string>,
+  maxPerPosition: Record<string, number | null> = {},
 ): Promise<OptimizeResult> {
   const glpk = await getGlpk();
   const slots = expandSlots(configuredSlots);
@@ -114,6 +115,21 @@ export async function optimizeRoster(
       name: `required_${playerId}`,
       vars,
       bnds: { type: glpk.GLP_FX, ub: 1, lb: 1 },
+    });
+  }
+
+  // Cap how many players of a given real position can appear anywhere on the
+  // roster (e.g. no more than 1 TE total, counting both the TE slot and FLEX).
+  for (const [position, max] of Object.entries(maxPerPosition)) {
+    if (max == null) continue;
+    const vars = eligiblePairs
+      .filter((p) => p.player.position === position)
+      .map(({ player, slot }) => ({ name: varName(player.id, slot.id), coef: 1 }));
+    if (vars.length === 0) continue;
+    subjectTo.push({
+      name: `maxpos_${position}`,
+      vars,
+      bnds: { type: glpk.GLP_UP, ub: max, lb: 0 },
     });
   }
 

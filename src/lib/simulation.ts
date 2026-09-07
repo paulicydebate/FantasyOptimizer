@@ -19,6 +19,7 @@ export async function runPriceVarianceSimulation(
   budget: number,
   requiredPlayerIds: Set<string>,
   variancePct: number,
+  maxPerPosition: Record<string, number | null> = {},
   runs: number = SIMULATION_RUNS,
   onProgress?: (completed: number) => void,
 ): Promise<SimulationSummary> {
@@ -27,7 +28,7 @@ export async function runPriceVarianceSimulation(
 
   for (let i = 0; i < runs; i++) {
     const jittered = players.map((p) => ({ ...p, cost: jitterCost(p.cost, variancePct) }));
-    const result = await optimizeRoster(jittered, slots, budget, requiredPlayerIds);
+    const result = await optimizeRoster(jittered, slots, budget, requiredPlayerIds, maxPerPosition);
     if (result.status === 'optimal') {
       successfulRuns++;
       for (const { player } of result.assignments) {

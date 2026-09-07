@@ -32,6 +32,12 @@ export interface RosterConfig {
   maxCost: number | null;
   /** +/- percent to randomly jitter each player's cost by when running the price-variance simulation. 0 disables it. */
   costVariancePct: number;
+  /**
+   * Caps how many players of a given real position can appear on the roster at
+   * all, counting every slot that position is eligible for (e.g. TE slot + FLEX).
+   * Keyed by real position value; null/absent means no cap.
+   */
+  maxPerPosition: Record<string, number | null>;
 }
 
 export interface OptimizeResult {
