@@ -240,6 +240,14 @@
 .total-slots-note {
   margin-top: 14px;
 }
+.slot-add-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.slot-add-buttons .btn-secondary {
+  margin-top: 12px;
+}
 
 /* Player filters */
 .player-filters {

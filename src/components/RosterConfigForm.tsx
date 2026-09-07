@@ -1,6 +1,8 @@
 import { makeId } from '../lib/id';
 import type { RosterConfig, RosterSlot } from '../types';
 
+const FLEX_ELIGIBLE = new Set(['RB', 'WR', 'TE']);
+
 interface Props {
   config: RosterConfig;
   onChange: (config: RosterConfig) => void;
@@ -20,6 +22,18 @@ export function RosterConfigForm({ config, onChange, availablePositions }: Props
       id: makeId(),
       label: '',
       eligiblePositions: [],
+      count: 1,
+    };
+    onChange({ ...config, slots: [...config.slots, slot] });
+  }
+
+  const flexPositions = availablePositions.filter((p) => FLEX_ELIGIBLE.has(p.toUpperCase()));
+
+  function addFlexSlot() {
+    const slot: RosterSlot = {
+      id: makeId(),
+      label: 'FLEX',
+      eligiblePositions: flexPositions,
       count: 1,
     };
     onChange({ ...config, slots: [...config.slots, slot] });
@@ -98,9 +112,16 @@ export function RosterConfigForm({ config, onChange, availablePositions }: Props
         ))}
       </div>
 
-      <button type="button" className="btn-secondary" onClick={addSlot}>
-        + Add slot
-      </button>
+      <div className="slot-add-buttons">
+        <button type="button" className="btn-secondary" onClick={addSlot}>
+          + Add slot
+        </button>
+        {flexPositions.length > 0 && (
+          <button type="button" className="btn-secondary" onClick={addFlexSlot}>
+            + Add FLEX ({flexPositions.join('/')})
+          </button>
+        )}
+      </div>
 
       <p className="muted total-slots-note">Total roster spots: {totalSlotCount}</p>
     </div>
