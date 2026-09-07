@@ -4,6 +4,7 @@ import { ColumnMapper } from './components/ColumnMapper';
 import type { MappingState } from './components/ColumnMapper';
 import { RosterConfigForm } from './components/RosterConfigForm';
 import { CostControls } from './components/CostControls';
+import { SleeperSync } from './components/SleeperSync';
 import { PlayerTable } from './components/PlayerTable';
 import { ResultsView } from './components/ResultsView';
 import { SensitivityView } from './components/SensitivityView';
@@ -148,6 +149,18 @@ export default function App() {
     clearPricePaid(id);
   }
 
+  /** Idempotent version of exclude, safe to call repeatedly (e.g. from a poll loop). */
+  function markDraftedByOpponent(id: string) {
+    setExcludedIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
+    setRequiredIds((prev) => {
+      if (!prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
+    clearPricePaid(id);
+  }
+
   function setPlayerPricePaid(id: string, price: number | null) {
     if (price == null || Number.isNaN(price)) {
       clearPricePaid(id);
@@ -248,6 +261,8 @@ export default function App() {
               ← Upload a different file
             </button>
           </div>
+
+          <SleeperSync players={players} onDraftedByMe={setPlayerPricePaid} onDraftedByOpponent={markDraftedByOpponent} />
 
           <RosterConfigForm config={config} onChange={setConfig} availablePositions={availablePositions} />
 
