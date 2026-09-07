@@ -64,6 +64,7 @@ export default function App() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [requiredIds, setRequiredIds] = useState<Set<string>>(new Set());
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
+  const [pricePaid, setPricePaidMap] = useState<Record<string, number>>({});
   const [config, setConfig] = useState<RosterConfig>(DEFAULT_CONFIG);
   const [result, setResult] = useState<OptimizeResult | null>(null);
   const [optimizing, setOptimizing] = useState(false);
@@ -96,17 +97,31 @@ export default function App() {
     setPlayers(built);
     setRequiredIds(new Set());
     setExcludedIds(new Set());
+    setPricePaidMap({});
     setConfig((prev) => ({ ...prev, positionCounts: {}, minCost: null, maxCost: null, maxPerPosition: {} }));
     setResult(null);
     setSimulation(null);
     setStage('build');
   }
 
+  function clearPricePaid(id: string) {
+    setPricePaidMap((prev) => {
+      if (!(id in prev)) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  }
+
   function toggleRequired(id: string) {
     setRequiredIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(id)) {
+        next.delete(id);
+        clearPricePaid(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
     setExcludedIds((prev) => {
@@ -130,15 +145,31 @@ export default function App() {
       next.delete(id);
       return next;
     });
+    clearPricePaid(id);
+  }
+
+  function setPlayerPricePaid(id: string, price: number | null) {
+    if (price == null || Number.isNaN(price)) {
+      clearPricePaid(id);
+      return;
+    }
+    setPricePaidMap((prev) => ({ ...prev, [id]: Math.max(0, price) }));
+    // Entering a real price means you actually drafted them - lock them into the roster.
+    setRequiredIds((prev) => (prev.has(id) ? prev : new Set(prev).add(id)));
   }
 
   function resetSelections() {
     setRequiredIds(new Set());
     setExcludedIds(new Set());
+    setPricePaidMap({});
+  }
+
+  function playersWithActualCosts(): Player[] {
+    return players.map((p) => (p.id in pricePaid ? { ...p, cost: pricePaid[p.id] } : p));
   }
 
   function eligiblePlayers(): Player[] {
-    return players.filter((p) => {
+    return playersWithActualCosts().filter((p) => {
       if (excludedIds.has(p.id)) return false;
       if (requiredIds.has(p.id)) return true;
       if (config.minCost != null && p.cost < config.minCost) return false;
@@ -166,6 +197,7 @@ export default function App() {
           requiredIds,
           config.costVariancePct,
           config.maxPerPosition,
+          new Set(Object.keys(pricePaid)),
           SIMULATION_RUNS,
           setSimulationProgress,
         );
@@ -192,7 +224,8 @@ export default function App() {
         <h1>Fantasy Roster Optimizer</h1>
         <p className="muted">
           Upload your player pool, set your budget and roster rules, lock in any must-have players, and find the
-          highest-scoring roster you can afford.
+          highest-scoring roster you can afford. During a live auction, mark players you've drafted (and what you
+          paid) or that someone else took, and re-generate to see the best roster with real prices and availability.
         </p>
       </header>
 
@@ -224,8 +257,10 @@ export default function App() {
             players={players}
             requiredIds={requiredIds}
             excludedIds={excludedIds}
+            pricePaid={pricePaid}
             onToggleRequired={toggleRequired}
             onToggleExcluded={toggleExcluded}
+            onSetPricePaid={setPlayerPricePaid}
             onResetSelections={resetSelections}
           />
 
@@ -240,7 +275,9 @@ export default function App() {
             {totalSpots === 0 && <p className="muted">Set at least one position count above to get started.</p>}
           </div>
 
-          {result && <ResultsView result={result} config={config} />}
+          {result && (
+            <ResultsView result={result} config={config} draftedIds={new Set(Object.keys(pricePaid))} />
+          )}
 
           {simulation && <SensitivityView summary={simulation} variancePct={config.costVariancePct} />}
         </>

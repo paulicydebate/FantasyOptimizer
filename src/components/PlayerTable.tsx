@@ -5,8 +5,10 @@ interface Props {
   players: Player[];
   requiredIds: Set<string>;
   excludedIds: Set<string>;
+  pricePaid: Record<string, number>;
   onToggleRequired: (id: string) => void;
   onToggleExcluded: (id: string) => void;
+  onSetPricePaid: (id: string, price: number | null) => void;
   onResetSelections: () => void;
 }
 
@@ -14,8 +16,10 @@ export function PlayerTable({
   players,
   requiredIds,
   excludedIds,
+  pricePaid,
   onToggleRequired,
   onToggleExcluded,
+  onSetPricePaid,
   onResetSelections,
 }: Props) {
   const [search, setSearch] = useState('');
@@ -36,9 +40,10 @@ export function PlayerTable({
   }, [players, search, positionFilter]);
 
   const requiredCount = requiredIds.size;
+  const draftedCount = Object.keys(pricePaid).length;
   const requiredCost = players
     .filter((p) => requiredIds.has(p.id))
-    .reduce((sum, p) => sum + p.cost, 0);
+    .reduce((sum, p) => sum + (pricePaid[p.id] ?? p.cost), 0);
   const excludedCount = excludedIds.size;
 
   return (
@@ -47,16 +52,18 @@ export function PlayerTable({
         <h2>Players ({players.length})</h2>
         {(requiredCount > 0 || excludedCount > 0) && (
           <button type="button" className="btn-secondary" onClick={onResetSelections}>
-            Reset require/exclude
+            Reset draft board
           </button>
         )}
       </div>
       <p className="muted">
-        Check "Require" to guarantee a player a roster spot, or "Exclude" to keep them out entirely.
+        Check "Require" (and optionally enter the price you paid) once you've drafted a player yourself, or to
+        flag a must-have target. Check "Exclude" once a player is drafted by someone else, or to rule them out.
         {requiredCount > 0 && (
           <strong>
             {' '}
-            {requiredCount} required, ${requiredCost.toLocaleString()} committed.
+            {requiredCount} required{draftedCount > 0 ? ` (${draftedCount} drafted)` : ''}, ${requiredCost.toLocaleString()}{' '}
+            committed.
           </strong>
         )}
         {excludedCount > 0 && <strong> {excludedCount} excluded.</strong>}
@@ -84,11 +91,12 @@ export function PlayerTable({
           <thead>
             <tr>
               <th>Require</th>
+              <th>Price paid</th>
               <th>Exclude</th>
               <th>Name</th>
               <th>Position</th>
               <th>Team</th>
-              <th className="num">Cost</th>
+              <th className="num">Listed cost</th>
               <th className="num">Proj. Points</th>
             </tr>
           </thead>
@@ -96,10 +104,25 @@ export function PlayerTable({
             {filtered.map((p) => {
               const isRequired = requiredIds.has(p.id);
               const isExcluded = excludedIds.has(p.id);
+              const paid = pricePaid[p.id];
               return (
                 <tr key={p.id} className={isRequired ? 'row-required' : isExcluded ? 'row-excluded' : ''}>
                   <td>
                     <input type="checkbox" checked={isRequired} onChange={() => onToggleRequired(p.id)} />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min={0}
+                      className="price-paid-input"
+                      placeholder="listed"
+                      disabled={isExcluded}
+                      value={paid ?? ''}
+                      onChange={(e) => {
+                        const raw = e.target.value;
+                        onSetPricePaid(p.id, raw === '' ? null : Number(raw));
+                      }}
+                    />
                   </td>
                   <td>
                     <input type="checkbox" checked={isExcluded} onChange={() => onToggleExcluded(p.id)} />
@@ -114,7 +137,7 @@ export function PlayerTable({
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="muted">
+                <td colSpan={8} className="muted">
                   No players match your filters.
                 </td>
               </tr>

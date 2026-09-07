@@ -169,6 +169,27 @@
   text-decoration: line-through;
   color: var(--text-muted);
 }
+.price-paid-input {
+  width: 64px;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+.price-paid-input:disabled {
+  opacity: 0.5;
+}
+.drafted-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-left: 6px;
+}
 
 /* Roster config */
 .budget-field {

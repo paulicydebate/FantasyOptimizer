@@ -11,7 +11,8 @@ function jitterCost(cost: number, variancePct: number): number {
 /**
  * Re-solves the roster many times with each player's cost randomly perturbed by
  * +/- variancePct, to see which players remain good picks even if real auction
- * prices don't land exactly where the sheet predicts.
+ * prices don't land exactly where the sheet predicts. Players in lockedCostIds
+ * (already drafted at a known real price) are never jittered.
  */
 export async function runPriceVarianceSimulation(
   players: Player[],
@@ -20,6 +21,7 @@ export async function runPriceVarianceSimulation(
   requiredPlayerIds: Set<string>,
   variancePct: number,
   maxPerPosition: Record<string, number | null> = {},
+  lockedCostIds: Set<string> = new Set(),
   runs: number = SIMULATION_RUNS,
   onProgress?: (completed: number) => void,
 ): Promise<SimulationSummary> {
@@ -27,7 +29,9 @@ export async function runPriceVarianceSimulation(
   let successfulRuns = 0;
 
   for (let i = 0; i < runs; i++) {
-    const jittered = players.map((p) => ({ ...p, cost: jitterCost(p.cost, variancePct) }));
+    const jittered = players.map((p) =>
+      lockedCostIds.has(p.id) ? p : { ...p, cost: jitterCost(p.cost, variancePct) },
+    );
     const result = await optimizeRoster(jittered, slots, budget, requiredPlayerIds, maxPerPosition);
     if (result.status === 'optimal') {
       successfulRuns++;

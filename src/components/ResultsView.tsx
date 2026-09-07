@@ -3,9 +3,10 @@ import type { OptimizeResult, RosterConfig } from '../types';
 interface Props {
   result: OptimizeResult;
   config: RosterConfig;
+  draftedIds?: Set<string>;
 }
 
-export function ResultsView({ result, config }: Props) {
+export function ResultsView({ result, config, draftedIds = new Set() }: Props) {
   if (result.status === 'infeasible' || result.status === 'error') {
     return (
       <div className="panel">
@@ -21,6 +22,12 @@ export function ResultsView({ result, config }: Props) {
   return (
     <div className="panel">
       <h2>Optimal roster</h2>
+      {draftedIds.size > 0 && (
+        <p className="muted">
+          "Drafted" rows are already on your team at the price you paid; the rest are the best picks for your
+          remaining budget and open slots.
+        </p>
+      )}
       <div className="results-summary">
         <div className="stat">
           <span className="stat-value">{result.totalPoints.toFixed(1)}</span>
@@ -52,7 +59,10 @@ export function ResultsView({ result, config }: Props) {
             {sorted.map(({ slot, player }) => (
               <tr key={slot.id}>
                 <td>{slot.label || slot.eligiblePositions.join('/')}</td>
-                <td>{player.name}</td>
+                <td>
+                  {player.name}
+                  {draftedIds.has(player.id) && <span className="drafted-tag">Drafted</span>}
+                </td>
                 <td>{player.position}</td>
                 <td>{player.team ?? ''}</td>
                 <td className="num">{player.cost}</td>
