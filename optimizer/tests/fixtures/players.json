@@ -1,0 +1,274 @@
+{
+ "6804": {
+  "full_name": "Jordan Love",
+  "first_name": "Jordan",
+  "last_name": "Love",
+  "position": "QB",
+  "team": "GB",
+  "injury_status": null
+ },
+ "11564": {
+  "full_name": "Drake Maye",
+  "first_name": "Drake",
+  "last_name": "Maye",
+  "position": "QB",
+  "team": "NE",
+  "injury_status": null
+ },
+ "8167": {
+  "full_name": "Christian Watson",
+  "first_name": "Christian",
+  "last_name": "Watson",
+  "position": "WR",
+  "team": "GB",
+  "injury_status": null
+ },
+ "12514": {
+  "full_name": "Emeka Egbuka",
+  "first_name": "Emeka",
+  "last_name": "Egbuka",
+  "position": "WR",
+  "team": "TB",
+  "injury_status": "Out"
+ },
+ "7588": {
+  "full_name": "Javonte Williams",
+  "first_name": "Javonte",
+  "last_name": "Williams",
+  "position": "RB",
+  "team": "DAL",
+  "injury_status": null
+ },
+ "8131": {
+  "full_name": "Isaiah Likely",
+  "first_name": "Isaiah",
+  "last_name": "Likely",
+  "position": "TE",
+  "team": "NYG",
+  "injury_status": null
+ },
+ "5892": {
+  "full_name": "David Montgomery",
+  "first_name": "David",
+  "last_name": "Montgomery",
+  "position": "RB",
+  "team": "HOU",
+  "injury_status": "Out"
+ },
+ "9997": {
+  "full_name": "Zay Flowers",
+  "first_name": "Zay",
+  "last_name": "Flowers",
+  "position": "WR",
+  "team": "BAL",
+  "injury_status": null
+ },
+ "8210": {
+  "full_name": "Chig Okonkwo",
+  "first_name": "Chig",
+  "last_name": "Okonkwo",
+  "position": "TE",
+  "team": "WAS",
+  "injury_status": null
+ },
+ "7564": {
+  "full_name": "Ja'Marr Chase",
+  "first_name": "Ja'Marr",
+  "last_name": "Chase",
+  "position": "WR",
+  "team": "CIN",
+  "injury_status": null
+ },
+ "13296": {
+  "full_name": "Caleb Douglas",
+  "first_name": "Caleb",
+  "last_name": "Douglas",
+  "position": "WR",
+  "team": "MIA",
+  "injury_status": null
+ },
+ "12474": {
+  "full_name": "Woody Marks",
+  "first_name": "Woody",
+  "last_name": "Marks",
+  "position": "RB",
+  "team": "HOU",
+  "injury_status": "Questionable"
+ },
+ "12490": {
+  "full_name": "Bhayshul Tuten",
+  "first_name": "Bhayshul",
+  "last_name": "Tuten",
+  "position": "RB",
+  "team": "JAX",
+  "injury_status": null
+ },
+ "6806": {
+  "full_name": "J.K. Dobbins",
+  "first_name": "J.K.",
+  "last_name": "Dobbins",
+  "position": "RB",
+  "team": "DEN",
+  "injury_status": null
+ },
+ "7525": {
+  "full_name": "DeVonta Smith",
+  "first_name": "DeVonta",
+  "last_name": "Smith",
+  "position": "WR",
+  "team": "PHI",
+  "injury_status": "Out"
+ },
+ "4034": {
+  "full_name": "Christian McCaffrey",
+  "first_name": "Christian",
+  "last_name": "McCaffrey",
+  "position": "RB",
+  "team": "SF",
+  "injury_status": "Questionable"
+ },
+ "9480": {
+  "full_name": "Brenton Strange",
+  "first_name": "Brenton",
+  "last_name": "Strange",
+  "position": "TE",
+  "team": "JAX",
+  "injury_status": null
+ },
+ "7526": {
+  "full_name": "Jaylen Waddle",
+  "first_name": "Jaylen",
+  "last_name": "Waddle",
+  "position": "WR",
+  "team": "DEN",
+  "injury_status": "Questionable"
+ },
+ "13424": {
+  "full_name": "Seth McGowan",
+  "first_name": "Seth",
+  "last_name": "McGowan",
+  "position": "RB",
+  "team": "IND",
+  "injury_status": null
+ },
+ "9224": {
+  "full_name": "Chase Brown",
+  "first_name": "Chase",
+  "last_name": "Brown",
+  "position": "RB",
+  "team": "CIN",
+  "injury_status": null
+ },
+ "8144": {
+  "full_name": "Chris Olave",
+  "first_name": "Chris",
+  "last_name": "Olave",
+  "position": "WR",
+  "team": "NO",
+  "injury_status": null
+ },
+ "4881": {
+  "full_name": "Lamar Jackson",
+  "first_name": "Lamar",
+  "last_name": "Jackson",
+  "position": "QB",
+  "team": "BAL",
+  "injury_status": "Out"
+ },
+ "8155": {
+  "full_name": "Breece Hall",
+  "first_name": "Breece",
+  "last_name": "Hall",
+  "position": "RB",
+  "team": "NYJ",
+  "injury_status": "Out"
+ },
+ "11604": {
+  "full_name": "Brock Bowers",
+  "first_name": "Brock",
+  "last_name": "Bowers",
+  "position": "TE",
+  "team": "LV",
+  "injury_status": null
+ },
+ "13298": {
+  "full_name": "KC Concepcion Jr.",
+  "first_name": "KC",
+  "last_name": "Concepcion Jr.",
+  "position": "WR",
+  "team": "CLE",
+  "injury_status": null
+ },
+ "10213": {
+  "full_name": "Tre Tucker",
+  "first_name": "Tre",
+  "last_name": "Tucker",
+  "position": "WR",
+  "team": "LV",
+  "injury_status": null
+ },
+ "13294": {
+  "full_name": "Makai Lemon",
+  "first_name": "Makai",
+  "last_name": "Lemon",
+  "position": "WR",
+  "team": "PHI",
+  "injury_status": null
+ },
+ "4035": {
+  "full_name": "Alvin Kamara",
+  "first_name": "Alvin",
+  "last_name": "Kamara",
+  "position": "RB",
+  "team": "NO",
+  "injury_status": null
+ },
+ "9484": {
+  "full_name": "Tucker Kraft",
+  "first_name": "Tucker",
+  "last_name": "Kraft",
+  "position": "TE",
+  "team": "GB",
+  "injury_status": null
+ },
+ "8130": {
+  "full_name": "Trey McBride",
+  "first_name": "Trey",
+  "last_name": "McBride",
+  "position": "TE",
+  "team": "ARI",
+  "injury_status": null
+ },
+ "11560": {
+  "full_name": "Caleb Williams",
+  "first_name": "Caleb",
+  "last_name": "Williams",
+  "position": "QB",
+  "team": "CHI",
+  "injury_status": null
+ },
+ "9487": {
+  "full_name": "Parker Washington",
+  "first_name": "Parker",
+  "last_name": "Washington",
+  "position": "WR",
+  "team": "JAX",
+  "injury_status": null
+ },
+ "12519": {
+  "full_name": "Luther Burden III",
+  "first_name": "Luther",
+  "last_name": "Burden III",
+  "position": "WR",
+  "team": "CHI",
+  "injury_status": null
+ },
+ "CIN": {
+  "full_name": null,
+  "first_name": "Cincinnati",
+  "last_name": "Bengals",
+  "position": "DEF",
+  "team": "CIN",
+  "injury_status": null
+ }
+}

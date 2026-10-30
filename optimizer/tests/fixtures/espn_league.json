@@ -1,0 +1,153 @@
+{
+ "leagueId": 67205459,
+ "league_name": "IGBBMN",
+ "season": 2026,
+ "source": "espn league rosters page",
+ "note": "Bye status not flagged on rosters page; injury_status = ESPN tag (O=Out,Q=Questionable,DTD,IR). teamId 14 manager is the user (Paul). player=null means empty slot.",
+ "teams": [
+  {
+   "teamId": 14,
+   "team_name": "Sleeper Superfan",
+   "manager": "Paul (user)",
+   "record": "(4-2-0)",
+   "players": [
+    {
+     "slot": "QB",
+     "player": "C.J. Stroud",
+     "injury_status": null,
+     "nfl_team": "HOU",
+     "position": "QB",
+     "acquired": "Free Agency"
+    },
+    {
+     "slot": "RB",
+     "player": "Rhamondre Stevenson",
+     "injury_status": null,
+     "nfl_team": "NE",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "RB",
+     "player": "Tony Pollard",
+     "injury_status": null,
+     "nfl_team": "TEN",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "WR",
+     "player": "Garrett Wilson",
+     "injury_status": null,
+     "nfl_team": "NYJ",
+     "position": "WR",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "WR",
+     "player": "Luther Burden III",
+     "injury_status": null,
+     "nfl_team": "CHI",
+     "position": "WR",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "TE",
+     "player": "Brock Bowers",
+     "injury_status": null,
+     "nfl_team": "LV",
+     "position": "TE",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "FLEX",
+     "player": "Nico Collins",
+     "injury_status": null,
+     "nfl_team": "HOU",
+     "position": "WR",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "D/ST",
+     "player": "Browns D/ST",
+     "injury_status": null,
+     "nfl_team": "CLE",
+     "position": "D/ST",
+     "acquired": "Free Agency"
+    },
+    {
+     "slot": "K",
+     "player": "Will Reichard",
+     "injury_status": null,
+     "nfl_team": "MIN",
+     "position": "K",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "James Cook III",
+     "injury_status": null,
+     "nfl_team": "BUF",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "Kenny Gainwell",
+     "injury_status": null,
+     "nfl_team": "TB",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "Caleb Williams",
+     "injury_status": null,
+     "nfl_team": "CHI",
+     "position": "QB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "RJ Harvey",
+     "injury_status": null,
+     "nfl_team": "DEN",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "Kaelon Black",
+     "injury_status": null,
+     "nfl_team": "SF",
+     "position": "RB",
+     "acquired": "Draft"
+    },
+    {
+     "slot": "Bench",
+     "player": "Deshaun Watson",
+     "injury_status": null,
+     "nfl_team": "CLE",
+     "position": "QB",
+     "acquired": "Free Agency"
+    },
+    {
+     "slot": "Bench",
+     "player": "Harrison Butker",
+     "injury_status": null,
+     "nfl_team": "KC",
+     "position": "K",
+     "acquired": "Free Agency"
+    },
+    {
+     "slot": "IR",
+     "player": "Jordyn Tyson",
+     "injury_status": "IR",
+     "nfl_team": "NO",
+     "position": "WR",
+     "acquired": "Draft"
+    }
+   ]
+  }
+ ]
+}
